@@ -1,12 +1,13 @@
-const API_USERS = 'https://gorest.co.in/public/v1/users?per_page=10&page=1';
-const API_POSTS = 'https://gorest.co.in/public/v2/posts?';
+const API_USERS = 'https://gorest.co.in/public/v2/users?per_page=10&page=1';
+const API_POSTS = 'https://gorest.co.in/public/v2/posts';
 
 const srrt = 'https://gorest.co.in/public/v2/users/1301436';
 const srrt2 = 'https://gorest.co.in/public/v2/posts?user_id=1301436';
 
-const userListContainer = document.querySelector('.user-list-container');
+const userListContainer = document.querySelector('.users-list-container');
+const postListContainer = document.querySelector('.posts-list-container');
 
-let selectedUserId = null;
+let selectedUserId = undefined;
 
 function createUserList(data) {
   const ul = document.createElement('ul');
@@ -20,14 +21,43 @@ function createUserList(data) {
   return ul;
 }
 
-async function getData(url) {
-  const response = await fetch(url);
-  const { data } = await response.json();
+function createPostsList(data) {
+  const ul = document.createElement('ul');
+  ul.classList.add('posts-list');
+  data.map((post) => {
+    const li = document.createElement('li');
+    li.textContent = post.title;
+
+    const childUl = document.createElement('ul');
+    li.appendChild(childUl);
+
+    const childLi = document.createElement('li');
+    childLi.textContent = post.body;
+
+    childUl.appendChild(childLi);
+
+    ul.appendChild(li);
+  });
+  return ul;
+}
+
+async function getData() {
+  const response = await fetch(API_USERS);
+  const data = await response.json();
+  console.log(data);
   const list = createUserList(data);
   userListContainer.appendChild(list);
 }
 
-getData(API_USERS);
+getData();
+
+async function getUserPosts() {
+  const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
+  const data = await response.json();
+  console.log(data);
+  const posts = createPostsList(data);
+  postListContainer.appendChild(posts);
+}
 
 function checkUserSelect(e) {
   if (e.target.querySelectorAll('li').length === 0) {
@@ -40,6 +70,8 @@ function checkUserSelect(e) {
     e.target.classList.add('selected-user');
     selectedUserId = e.target.classList.value.split(' ')[0];
     console.log(selectedUserId);
+    postListContainer.innerHTML = '';
+    getUserPosts();
   }
 }
 

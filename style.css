@@ -1,0 +1,13 @@
+.selected-user {
+  color: red;
+}
+li {
+  user-select: text; /* або user-select: auto; */
+}
+.container {
+  display: flex;
+}
+
+.bl-border {
+  border: 5px solid black;
+}

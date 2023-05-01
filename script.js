@@ -2,8 +2,9 @@ const API_USERS = 'https://gorest.co.in/public/v2/users?per_page=40&page=1';
 const API_POSTS = 'https://gorest.co.in/public/v2/posts';
 const API_COMMENTS = 'https://gorest.co.in/public/v2/comments';
 
-const userListContainer = document.querySelector('.users-list-container');
-const postListContainer = document.querySelector('.posts-list-container');
+const usersListContainer = document.querySelector('.users-list-container');
+const postsListContainer = document.querySelector('.posts-list-container');
+const postSelect = document.querySelector('.post-select');
 
 let selectedUserId = undefined;
 let selectedPostId = undefined;
@@ -21,33 +22,37 @@ function createUserList(data) {
 }
 
 function createPostsList(data) {
-  const ul = document.createElement('ul');
-  ul.classList.add('posts-list');
+  const postsList = document.createElement('ul');
+  postsList.classList.add('posts-list');
   data.map((post) => {
     const li = document.createElement('li');
+    li.classList.add(`list-el`);
 
-    const p = document.createElement('p');
-    p.textContent = post.title;
-    p.classList.add(`post-id-${post.id}`);
-    li.appendChild(p);
+    const postTitle = document.createElement('h3');
+    postTitle.textContent = post.title;
+    postTitle.id = post.id;
+    postTitle.classList.add('post-title');
+    li.appendChild(postTitle);
 
-    const childUl = document.createElement('ul');
-    li.appendChild(childUl);
+    const postComments = document.createElement('span');
+    postComments.id = post.id;
+    postComments.classList.add('post-comments');
+    postComments.textContent = 'Comments';
+    postTitle.appendChild(postComments);
 
-    const childLi = document.createElement('li');
-    childLi.textContent = post.body;
+    const postBody = document.createElement('p');
+    postBody.textContent = post.body;
+    li.appendChild(postBody);
 
-    childUl.appendChild(childLi);
-
-    ul.appendChild(li);
+    postsList.appendChild(li);
   });
-  return ul;
+  return postsList;
 }
 
 function createPostCommentsList(data, postId) {
   const ul = document.createElement('ul');
   ul.classList.add('comments-list');
-  const post = document.querySelector(`.${postId}`);
+  const post = document.getElementById(`${postId}`);
   post.appendChild(ul);
   data.map((comment) => {
     const li = document.createElement('li');
@@ -61,7 +66,7 @@ async function getData() {
   const data = await response.json();
   console.log(data);
   const list = createUserList(data);
-  userListContainer.appendChild(list);
+  usersListContainer.appendChild(list);
 }
 
 getData();
@@ -71,13 +76,11 @@ async function getUserPosts() {
   const data = await response.json();
   console.log(data);
   const posts = createPostsList(data);
-  postListContainer.appendChild(posts);
+  postsListContainer.appendChild(posts);
 }
 
 async function getPostComments() {
-  const response = await fetch(
-    `${API_COMMENTS}?post_id=${selectedPostId.split('-')[2]}`
-  );
+  const response = await fetch(`${API_COMMENTS}?post_id=${selectedPostId}`);
   const data = await response.json();
   console.log(data);
   createPostCommentsList(data, selectedPostId);
@@ -87,26 +90,28 @@ function selectUser(e) {
   if (e.target.closest('li')) {
     // Тут я намагався уникнути бага. При виділенні декількох елементів клас додавався до всіх дочірніх елементів.
     // Пофіксив але не впевниний що продуктивність методу ок.\
-    const childElements = userListContainer.querySelectorAll('li');
+    const childElements = usersListContainer.querySelectorAll('li');
     childElements.forEach((element) => {
       element.classList.remove('selected-user');
     });
     e.target.classList.add('selected-user');
     selectedUserId = e.target.classList.value.split(' ')[0];
     console.log(selectedUserId);
-    postListContainer.innerHTML = '';
+    postsListContainer.innerHTML = '';
     getUserPosts();
   }
 }
 
-userListContainer.addEventListener('click', selectUser);
+usersListContainer.addEventListener('click', selectUser);
 
-function selectPost(e) {
-  if (e.target.closest('p')) {
-    selectedPostId = e.target.classList.value.split(' ')[0];
-    console.log(selectedPostId);
+function selectPostComments(e) {
+  const id = e.target.id;
+  if (id > 0) {
+    postSelect.textContent = `Posts Comments ${id}`;
+    selectedPostId = id;
     getPostComments();
   }
+  console.log(selectedPostId);
 }
 
-postListContainer.addEventListener('click', selectPost);
+postsListContainer.addEventListener('click', selectPostComments);

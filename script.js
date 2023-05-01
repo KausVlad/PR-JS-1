@@ -42,6 +42,7 @@ function createPostsList(data) {
     postTitle.appendChild(postComments);
 
     const postBody = document.createElement('p');
+    postBody.id = `body-${post.id}`;
     postBody.classList.add('post-body');
     postBody.textContent = post.body;
     li.appendChild(postBody);
@@ -138,14 +139,16 @@ function selectPostComments(e) {
   postNameText = undefined;
   postBodyText = undefined;
   const id = e.target.id;
+  console.log(e.target);
   if (id > 0) {
-    const postTitle = document.querySelector(`.post-title`);
+    selectedPostId = id;
+    const postTitle = document.getElementById(`${selectedPostId}`);
     postNameText = postTitle.childNodes[0].nodeValue.trim();
+    console.log(postNameText);
 
-    const postBodyContent = document.querySelector(`.post-body`);
+    const postBodyContent = document.getElementById(`body-${selectedPostId}`);
     postBodyText = postBodyContent.textContent;
 
-    selectedPostId = id;
     getPostComments();
   }
   if (e.target.classList.contains('posts-return')) {

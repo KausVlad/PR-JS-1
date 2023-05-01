@@ -98,13 +98,27 @@ function createPostCommentsList(data, postId, userC, userCB) {
   }
 }
 
-async function getData() {
-  const response = await fetch(API_USERS);
-  const data = await response.json();
-  createUserList(data);
+function errorUserRender(error) {
+  usersListContainer.textContent = error.message;
 }
 
-getData();
+async function getUsersList() {
+  try {
+    const response = await fetch(API_USERS);
+    if (!response.ok) {
+      throw new Error('Failed to load users. Try again later');
+    }
+    const data = await response.json();
+    if (data.length === 0) {
+      throw new Error('Users list is empty');
+    }
+    createUserList(data);
+  } catch (error) {
+    errorUserRender(error);
+  }
+}
+
+getUsersList();
 
 async function getUserPosts() {
   const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
@@ -115,7 +129,6 @@ async function getUserPosts() {
 async function getPostComments() {
   const response = await fetch(`${API_COMMENTS}?post_id=${selectedPostId}`);
   const data = await response.json();
-  console.log(data);
   createPostCommentsList(data, selectedPostId, postNameText, postBodyText);
 }
 
@@ -139,12 +152,10 @@ function selectPostComments(e) {
   postNameText = undefined;
   postBodyText = undefined;
   const id = e.target.id;
-  console.log(e.target);
   if (id > 0) {
     selectedPostId = id;
     const postTitle = document.getElementById(`${selectedPostId}`);
     postNameText = postTitle.childNodes[0].nodeValue.trim();
-    console.log(postNameText);
 
     const postBodyContent = document.getElementById(`body-${selectedPostId}`);
     postBodyText = postBodyContent.textContent;

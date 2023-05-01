@@ -6,8 +6,7 @@ const usersListContainer = document.querySelector('.users-list-container');
 const postsListContainer = document.querySelector('.posts-list-container');
 const postSelect = document.querySelector('.post-select');
 
-let selectedUserId = undefined;
-let selectedPostId = undefined;
+let postBodyText, postNameText, selectedUserId, selectedPostId;
 
 function createUserList(data) {
   const ul = document.createElement('ul');
@@ -18,7 +17,7 @@ function createUserList(data) {
     li.id = user.id;
     ul.appendChild(li);
   });
-  return ul;
+  usersListContainer.appendChild(ul);
 }
 
 function createPostsList(data) {
@@ -43,15 +42,16 @@ function createPostsList(data) {
     postTitle.appendChild(postComments);
 
     const postBody = document.createElement('p');
+    postBody.classList.add('post-body');
     postBody.textContent = post.body;
     li.appendChild(postBody);
 
     postsList.appendChild(li);
   });
-  return postsList;
+  postsListContainer.appendChild(postsList);
 }
 
-function createPostCommentsList(data, postId) {
+function createPostCommentsList(data, postId, userC, userCB) {
   if (data.length > 0) {
     postSelect.textContent = `Post Comments`;
     postsListContainer.innerHTML = '';
@@ -63,11 +63,11 @@ function createPostCommentsList(data, postId) {
     commentsContainer.appendChild(postsDetails);
 
     const postTitle = document.createElement('h3');
-    postTitle.textContent = 'Post title';
+    postTitle.textContent = userC;
     postsDetails.appendChild(postTitle);
 
     const postBody = document.createElement('p');
-    postBody.textContent = 'Post body';
+    postBody.textContent = userCB;
     postsDetails.appendChild(postBody);
 
     const postComments = document.createElement('h2');
@@ -78,13 +78,15 @@ function createPostCommentsList(data, postId) {
     commentsList.classList.add(`comments-list`);
     commentsContainer.appendChild(commentsList);
 
-    const commentAuthorName = document.createElement('h5');
-    commentAuthorName.textContent = 'Author name';
-    commentsList.appendChild(commentAuthorName);
+    data.map((id) => {
+      const commentAuthorName = document.createElement('h5');
+      commentAuthorName.textContent = `${id.name}`;
+      commentsList.appendChild(commentAuthorName);
 
-    const commentBody = document.createElement('p');
-    commentBody.textContent = 'Comment body';
-    commentsList.appendChild(commentBody);
+      const commentBody = document.createElement('p');
+      commentBody.textContent = `${id.body}`;
+      commentsList.appendChild(commentBody);
+    });
 
     // const ul = document.createElement('ul');
     // ul.classList.add('comments-list');
@@ -95,15 +97,14 @@ function createPostCommentsList(data, postId) {
     //   li.textContent = `${comment.name}: ${comment.body}`;
     //   ul.appendChild(li);
     // });
-    return commentsContainer;
+    postsListContainer.appendChild(commentsContainer);
   }
 }
 
 async function getData() {
   const response = await fetch(API_USERS);
   const data = await response.json();
-  const list = createUserList(data);
-  usersListContainer.appendChild(list);
+  createUserList(data);
 }
 
 getData();
@@ -111,16 +112,14 @@ getData();
 async function getUserPosts() {
   const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
   const data = await response.json();
-  const posts = createPostsList(data);
-  postsListContainer.appendChild(posts);
+  createPostsList(data);
 }
 
 async function getPostComments() {
   const response = await fetch(`${API_COMMENTS}?post_id=${selectedPostId}`);
   const data = await response.json();
   console.log(data);
-  const comments = createPostCommentsList(data, selectedPostId);
-  postsListContainer.appendChild(comments);
+  createPostCommentsList(data, selectedPostId, postNameText, postBodyText);
 }
 
 function selectUser(e) {
@@ -140,12 +139,20 @@ function selectUser(e) {
 usersListContainer.addEventListener('click', selectUser);
 
 function selectPostComments(e) {
+  postNameText = undefined;
+  postBodyText = undefined;
   const id = e.target.id;
   if (id > 0) {
+    const postTitle = document.querySelector(`.post-title`);
+    postNameText = postTitle.childNodes[0].nodeValue.trim();
+
+    const postBodyContent = document.querySelector(`.post-body`);
+    postBodyText = postBodyContent.textContent;
+
     selectedPostId = id;
     getPostComments();
   }
-  console.log(selectedPostId);
+  console.log(selectedPostId, postNameText, postBodyText);
 }
 
 postsListContainer.addEventListener('click', selectPostComments);

@@ -16,9 +16,7 @@ li {
 .users-list-container {
   min-width: 14rem;
 }
-.btn-back {
-  display: none;
-}
+
 .post-title {
   display: flex;
   justify-content: space-between;

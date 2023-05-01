@@ -63,8 +63,14 @@ function createPostCommentsList(data, postId, userC, userCB) {
     commentsContainer.appendChild(postsDetails);
 
     const postTitle = document.createElement('h3');
+    postTitle.classList.add('post-title');
     postTitle.textContent = userC;
     postsDetails.appendChild(postTitle);
+
+    const postsReturn = document.createElement('button');
+    postsReturn.classList.add('posts-return');
+    postsReturn.textContent = 'Return to Posts';
+    postTitle.appendChild(postsReturn);
 
     const postBody = document.createElement('p');
     postBody.textContent = userCB;
@@ -87,16 +93,6 @@ function createPostCommentsList(data, postId, userC, userCB) {
       commentBody.textContent = `${id.body}`;
       commentsList.appendChild(commentBody);
     });
-
-    // const ul = document.createElement('ul');
-    // ul.classList.add('comments-list');
-    // const post = document.getElementById(`${postId}`);
-    // post.appendChild(ul);
-    // data.map((comment) => {
-    //   const li = document.createElement('li');
-    //   li.textContent = `${comment.name}: ${comment.body}`;
-    //   ul.appendChild(li);
-    // });
     postsListContainer.appendChild(commentsContainer);
   }
 }
@@ -152,7 +148,9 @@ function selectPostComments(e) {
     selectedPostId = id;
     getPostComments();
   }
-  console.log(selectedPostId, postNameText, postBodyText);
+  if (e.target.classList.contains('posts-return')) {
+    getUserPosts();
+  }
 }
 
 postsListContainer.addEventListener('click', selectPostComments);

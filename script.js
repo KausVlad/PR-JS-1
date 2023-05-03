@@ -135,7 +135,7 @@ async function getPostComments() {
 function selectUser(e) {
   if (e.target.closest('li')) {
     // Тут я намагався уникнути бага. При виділенні декількох елементів клас додавався до всіх дочірніх елементів.
-    // Пофіксив але не впевниний що продуктивність методу ок.\
+    // Пофіксив але не впевнений що продуктивність методу ок.\
     const childElements = usersListContainer.querySelectorAll('li');
     childElements.forEach((element) => {
       element.classList.remove('selected-user');

@@ -53,38 +53,38 @@ function createPostsList(data) {
 }
 
 function createPostCommentsList(data, postId, userC, userCB) {
+  postSelect.textContent = `Post Comments`;
+  postsListContainer.innerHTML = '';
+  const commentsContainer = document.createElement('ul');
+  commentsContainer.classList.add('comments-list');
+
+  const postsDetails = document.createElement('li');
+  postsDetails.classList.add(`post-details`);
+  commentsContainer.appendChild(postsDetails);
+
+  const postTitle = document.createElement('h3');
+  postTitle.classList.add('post-title');
+  postTitle.textContent = userC;
+  postsDetails.appendChild(postTitle);
+
+  const postsReturn = document.createElement('button');
+  postsReturn.classList.add('posts-return');
+  postsReturn.textContent = 'Return to Posts';
+  postTitle.appendChild(postsReturn);
+
+  const postBody = document.createElement('p');
+  postBody.textContent = userCB;
+  postsDetails.appendChild(postBody);
+
+  const postComments = document.createElement('h2');
+  postComments.textContent = 'Comments';
+  commentsContainer.appendChild(postComments);
+
+  const commentsList = document.createElement('li');
+  commentsList.classList.add(`comments-list`);
+  commentsContainer.appendChild(commentsList);
+
   if (data.length > 0) {
-    postSelect.textContent = `Post Comments`;
-    postsListContainer.innerHTML = '';
-    const commentsContainer = document.createElement('ul');
-    commentsContainer.classList.add('comments-list');
-
-    const postsDetails = document.createElement('li');
-    postsDetails.classList.add(`post-details`);
-    commentsContainer.appendChild(postsDetails);
-
-    const postTitle = document.createElement('h3');
-    postTitle.classList.add('post-title');
-    postTitle.textContent = userC;
-    postsDetails.appendChild(postTitle);
-
-    const postsReturn = document.createElement('button');
-    postsReturn.classList.add('posts-return');
-    postsReturn.textContent = 'Return to Posts';
-    postTitle.appendChild(postsReturn);
-
-    const postBody = document.createElement('p');
-    postBody.textContent = userCB;
-    postsDetails.appendChild(postBody);
-
-    const postComments = document.createElement('h2');
-    postComments.textContent = 'Comments';
-    commentsContainer.appendChild(postComments);
-
-    const commentsList = document.createElement('li');
-    commentsList.classList.add(`comments-list`);
-    commentsContainer.appendChild(commentsList);
-
     data.map((id) => {
       const commentAuthorName = document.createElement('h5');
       commentAuthorName.textContent = `${id.name}`;
@@ -94,15 +94,25 @@ function createPostCommentsList(data, postId, userC, userCB) {
       commentBody.textContent = `${id.body}`;
       commentsList.appendChild(commentBody);
     });
-    postsListContainer.appendChild(commentsContainer);
+  } else {
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = 'There are no comments';
+    errorMessage.classList.add('error-message');
+    commentsList.appendChild(errorMessage);
   }
+  postsListContainer.appendChild(commentsContainer);
 }
 
 function errorUserRender(error) {
   usersListContainer.textContent = error.message;
 }
-function errorPostsRender(error) {
-  postsListContainer.textContent = error.message;
+
+function errorCommentsRender(error) {
+  const errorMessage = document.createElement('p');
+  errorMessage.textContent = error.message;
+  errorMessage.classList.add('error-message');
+
+  postsListContainer.appendChild(errorMessage);
 }
 
 async function getUsersList() {
@@ -142,6 +152,7 @@ async function getUserPosts() {
 async function getPostComments() {
   const response = await fetch(`${API_COMMENTS}?post_id=${selectedPostId}`);
   const data = await response.json();
+
   createPostCommentsList(data, selectedPostId, postNameText, postBodyText);
 }
 

@@ -101,6 +101,9 @@ function createPostCommentsList(data, postId, userC, userCB) {
 function errorUserRender(error) {
   usersListContainer.textContent = error.message;
 }
+function errorPostsRender(error) {
+  postsListContainer.textContent = error.message;
+}
 
 async function getUsersList() {
   try {
@@ -121,9 +124,19 @@ async function getUsersList() {
 getUsersList();
 
 async function getUserPosts() {
-  const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
-  const data = await response.json();
-  createPostsList(data);
+  try {
+    const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
+    if (!response.ok) {
+      throw new Error('Failed to load posts. Try again later');
+    }
+    const data = await response.json();
+    if (data.length === 0) {
+      throw new Error('This user has no posts');
+    }
+    createPostsList(data);
+  } catch (error) {
+    errorPostsRender(error);
+  }
 }
 
 async function getPostComments() {

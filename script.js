@@ -107,6 +107,10 @@ function errorUserRender(error) {
   usersListContainer.textContent = error.message;
 }
 
+function errorPostsRender(error) {
+  postsListContainer.textContent = error.message;
+}
+
 function errorCommentsRender(error) {
   const errorMessage = document.createElement('p');
   errorMessage.textContent = error.message;

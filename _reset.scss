@@ -1,13 +1,15 @@
-@charset "UTF-8";
 /***
     The new CSS reset - version 1.8.4 (last updated 14.2.2023)
     GitHub page: https://github.com/elad2412/the-new-css-reset
 ***/
+
 /*
     Remove all the styles of the "User-Agent-Stylesheet", except for the 'display' property
     - The "symbol *" part is to solve Firefox SVG sprite bug
  */
-*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+*:where(
+    :not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)
+  ) {
   all: unset;
   display: revert;
 }
@@ -57,8 +59,7 @@ textarea {
 /* minimum style to allow to style meter element */
 meter {
   -webkit-appearance: revert;
-  -moz-appearance: revert;
-       appearance: revert;
+  appearance: revert;
 }
 
 /* preformatted text - use only for this feature */
@@ -67,9 +68,6 @@ meter {
 }
 
 /* reset default text opacity of input placeholder */
-::-moz-placeholder {
-  color: unset;
-}
 ::placeholder {
   color: unset;
 }
@@ -88,7 +86,7 @@ meter {
 /* revert for bug in Chromium browsers
    - fix for the content editable attribute will work properly.
    - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element*/
-:where([contenteditable]:not([contenteditable=false])) {
+:where([contenteditable]:not([contenteditable='false'])) {
   -moz-user-modify: read-write;
   -webkit-user-modify: read-write;
   overflow-wrap: break-word;
@@ -97,7 +95,7 @@ meter {
 }
 
 /* apply back the draggable feature - exist only in Chromium and Safari */
-:where([draggable=true]) {
+:where([draggable='true']) {
   -webkit-user-drag: element;
 }
 
@@ -105,111 +103,3 @@ meter {
 :where(dialog:modal) {
   all: revert;
 }
-
-body {
-  font-family: sans-serif;
-}
-
-li {
-  -webkit-user-select: text;
-     -moz-user-select: text;
-          user-select: text; /* або user-select: auto; */
-}
-
-.error-message {
-  font-weight: 600;
-  text-transform: uppercase;
-  min-height: 400px;
-  margin: 20px 20px;
-}
-
-.container {
-  display: flex;
-  max-width: 1200px;
-  margin: 10px auto;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0px 9px 23px 1px #eaeaea;
-}
-
-.users-list-container {
-  min-width: 14rem;
-}
-.users-list-container li {
-  cursor: pointer;
-  padding: 10px;
-}
-.users-list-container li:hover {
-  text-decoration: underline;
-  background-color: #f7f7f7;
-}
-.users-list-container li:hover.selected-user {
-  background-color: #eaeaea;
-}
-.users-list-container ol {
-  list-style-type: decimal;
-  list-style-position: inside;
-}
-
-.selected-user {
-  /* color: red; */
-  background-color: #eaeaea;
-}
-
-.post-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.posts-container {
-  width: 100%;
-  background-color: #eaeaea;
-  padding: 20px;
-}
-.posts-container li {
-  margin-bottom: 20px;
-}
-.posts-container li p {
-  padding: 0 20px;
-}
-
-h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-h3 {
-  font-size: 20px;
-  margin-bottom: 16px;
-  -webkit-text-decoration: underline #5c5c5c;
-          text-decoration: underline #5c5c5c;
-  cursor: pointer;
-}
-
-.post-info {
-  cursor: text;
-  text-decoration: none;
-}
-
-button {
-  text-decoration: none;
-  background: #5c5c5c;
-  color: #fbfbfb;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-button:hover {
-  background: #878787;
-  box-shadow: 0px 2px 4px 1px #9f9f9f;
-}
-
-.comments-list h5 {
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-.comments-list p {
-  margin-bottom: 20px;
-}/*# sourceMappingURL=style.css.map */

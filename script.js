@@ -1,4 +1,4 @@
-const API_USERS = 'https://gorest.co.in/public/v2/users?per_page=40&page=1';
+const API_USERS = 'https://gorest.co.in/public/v2/users?per_page=20&page=1';
 const API_POSTS = 'https://gorest.co.in/public/v2/posts';
 const API_COMMENTS = 'https://gorest.co.in/public/v2/comments';
 
@@ -9,7 +9,7 @@ const postSelect = document.querySelector('.post-select');
 let postBodyText, postNameText, selectedUserId, selectedPostId;
 
 function createUserList(data) {
-  const ul = document.createElement('ul');
+  const ul = document.createElement('ol');
   ul.classList.add('user-list');
   data.map((user) => {
     const li = document.createElement('li');
@@ -35,7 +35,7 @@ function createPostsList(data) {
     postTitle.classList.add('post-title');
     li.appendChild(postTitle);
 
-    const postComments = document.createElement('span');
+    const postComments = document.createElement('button');
     postComments.id = post.id;
     postComments.classList.add('post-comments');
     postComments.textContent = 'Comments';
@@ -64,6 +64,7 @@ function createPostCommentsList(data, postId, userC, userCB) {
 
   const postTitle = document.createElement('h3');
   postTitle.classList.add('post-title');
+  postTitle.classList.add('post-info');
   postTitle.textContent = userC;
   postsDetails.appendChild(postTitle);
 
@@ -104,11 +105,20 @@ function createPostCommentsList(data, postId, userC, userCB) {
 }
 
 function errorUserRender(error) {
-  usersListContainer.textContent = error.message;
+  usersListContainer.innerHTML = '';
+
+  const errorMessage = document.createElement('p');
+  errorMessage.textContent = error.message;
+  errorMessage.classList.add('error-message');
+  usersListContainer.appendChild(errorMessage);
 }
 
 function errorPostsRender(error) {
-  postsListContainer.textContent = error.message;
+  postsListContainer.innerHTML = '';
+  const errorMessage = document.createElement('p');
+  errorMessage.textContent = error.message;
+  errorMessage.classList.add('error-message');
+  postsListContainer.appendChild(errorMessage);
 }
 
 function errorCommentsRender(error) {

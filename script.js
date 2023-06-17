@@ -1,6 +1,4 @@
-const API_USERS = 'https://gorest.co.in/public/v2/users?per_page=20&page=1';
-const API_POSTS = 'https://gorest.co.in/public/v2/posts';
-const API_COMMENTS = 'https://gorest.co.in/public/v2/comments';
+const API = 'https://gorest.co.in/public/v2/';
 
 const usersListContainer = document.querySelector('.users-list-container');
 const postsListContainer = document.querySelector('.posts-list-container');
@@ -131,7 +129,7 @@ function errorCommentsRender(error) {
 
 async function getUsersList() {
   try {
-    const response = await fetch(API_USERS);
+    const response = await fetch(`${API}users?per_page=20&page=1`);
     if (!response.ok) {
       throw new Error('Failed to load users. Try again later');
     }
@@ -149,7 +147,7 @@ getUsersList();
 
 async function getUserPosts() {
   try {
-    const response = await fetch(`${API_POSTS}?user_id=${selectedUserId}`);
+    const response = await fetch(`${API}posts?user_id=${selectedUserId}`);
     if (!response.ok) {
       throw new Error('Failed to load posts. Try again later');
     }
@@ -164,7 +162,7 @@ async function getUserPosts() {
 }
 
 async function getPostComments() {
-  const response = await fetch(`${API_COMMENTS}?post_id=${selectedPostId}`);
+  const response = await fetch(`${API}comments?post_id=${selectedPostId}`);
   const data = await response.json();
 
   createPostCommentsList(data, selectedPostId, postNameText, postBodyText);
